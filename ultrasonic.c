@@ -79,7 +79,7 @@ int16_t read16(uint8_t addr, uint8_t deviceAddr) {
 }
 
 // Define constants for motor control
-#define WHEEL_CIRCUMFERENCE_CM 20.0 // need to update
+#define WHEEL_CIRCUMFERENCE_CM 18.85 // need to update
 #define PULSES_PER_REVOLUTION 360  // Change with actual value
 
 static uint32_t last_edge_time; 
