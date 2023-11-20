@@ -69,6 +69,7 @@ int car_mode = MANUAL;
 #define RIGHT 4
 #define FORWARD 5
 #define BACKWARD 6
+#define STOP 7
 
 
 int16_t read16(uint8_t addr, uint8_t deviceAddr) {
@@ -92,8 +93,8 @@ int timeout = 30000; // Increase the timeout to handle longer distances
 int car_angle_buffer = 32;
 int car_length = 28;
 
-const uint trigPin = 20; 
-const uint echoPin = 21;
+const uint trigPin = 13; 
+const uint echoPin = 12;
 
 // Function for wheel encoder to calculate distance and speed
 void gpio_callback(uint gpio, uint32_t events) { 
@@ -120,7 +121,8 @@ void setPWM(uint m,int s) {
 
 // Function to move the car based on received instruction
 void move(int ins){
-    if(ins==FORWARD){
+    if(ins==FORWARD)
+    {
         gpio_put(MOTOR1_IN1_PIN, 1);
         gpio_put(MOTOR1_IN2_PIN, 0);
         gpio_put(MOTOR2_IN1_PIN, 1);
@@ -129,8 +131,10 @@ void move(int ins){
         gpio_put(MOTOR3_IN2_PIN, 0);
         gpio_put(MOTOR4_IN1_PIN, 1);
         gpio_put(MOTOR4_IN2_PIN, 0);
-        sleep_ms(1000);}
-    else if (ins==BACKWARD){
+        // sleep_ms(1000);
+    }
+    else if (ins==BACKWARD)
+    {
         gpio_put(MOTOR1_IN1_PIN, 0);
         gpio_put(MOTOR1_IN2_PIN, 1);
         gpio_put(MOTOR2_IN1_PIN, 0);
@@ -139,8 +143,10 @@ void move(int ins){
         gpio_put(MOTOR3_IN2_PIN, 1);
         gpio_put(MOTOR4_IN1_PIN, 0);
         gpio_put(MOTOR4_IN2_PIN, 1);
-        sleep_ms(1000);}
-    else if (ins==LEFT){
+        // sleep_ms(1000);
+    }
+    else if (ins==LEFT)
+    {
         gpio_put(MOTOR1_IN1_PIN, 1);
         gpio_put(MOTOR1_IN2_PIN, 0);
         gpio_put(MOTOR2_IN1_PIN, 0);
@@ -149,7 +155,20 @@ void move(int ins){
         gpio_put(MOTOR3_IN2_PIN, 1);
         gpio_put(MOTOR4_IN1_PIN, 1);
         gpio_put(MOTOR4_IN2_PIN, 0);
-        sleep_ms(1000);}
+        // sleep_ms(1000);
+    }
+    else if (ins==STOP)
+    {
+        gpio_put(MOTOR1_IN1_PIN, 0);
+        gpio_put(MOTOR1_IN2_PIN, 0);
+        gpio_put(MOTOR2_IN1_PIN, 0);
+        gpio_put(MOTOR2_IN2_PIN, 0);
+        gpio_put(MOTOR3_IN1_PIN, 0);
+        gpio_put(MOTOR3_IN2_PIN, 0);
+        gpio_put(MOTOR4_IN1_PIN, 0);
+        gpio_put(MOTOR4_IN2_PIN, 0);
+        // sleep_ms(1000);
+    }
 }
 
 // Function to move by fixed distance
@@ -342,58 +361,62 @@ int main()
     {
 
         // Magnetometer
-        int16_t magX = read16(MAG_OUT_X_H, LSM303DLHC_MAG_ADDR);
-        int16_t magY = read16(MAG_OUT_Y_H, LSM303DLHC_MAG_ADDR);
-        int16_t magZ = read16(MAG_OUT_Z_H, LSM303DLHC_MAG_ADDR);
+        // int16_t magX = read16(MAG_OUT_X_H, LSM303DLHC_MAG_ADDR);
+        // int16_t magY = read16(MAG_OUT_Y_H, LSM303DLHC_MAG_ADDR);
+        // int16_t magZ = read16(MAG_OUT_Z_H, LSM303DLHC_MAG_ADDR);
         
-        int16_t accX = read16(ACC_OUT_X_L, LSM303DLHC_ACC_ADDR);
-        int16_t accY = read16(ACC_OUT_Y_L, LSM303DLHC_ACC_ADDR);
-        int16_t accZ = read16(ACC_OUT_Z_L, LSM303DLHC_ACC_ADDR);
+        // int16_t accX = read16(ACC_OUT_X_L, LSM303DLHC_ACC_ADDR);
+        // int16_t accY = read16(ACC_OUT_Y_L, LSM303DLHC_ACC_ADDR);
+        // int16_t accZ = read16(ACC_OUT_Z_L, LSM303DLHC_ACC_ADDR);
 
-        double magXuT = magX * MAG_SCALE_FACTOR;
-        double magYuT = magY * MAG_SCALE_FACTOR;
-        double magZuT = magZ * MAG_SCALE_FACTOR;
+        // double magXuT = magX * MAG_SCALE_FACTOR;
+        // double magYuT = magY * MAG_SCALE_FACTOR;
+        // double magZuT = magZ * MAG_SCALE_FACTOR;
 
-        double accXg = accX * ACC_SCALE_FACTOR;
-        double accYg = accY * ACC_SCALE_FACTOR;
-        double accZg = accZ * ACC_SCALE_FACTOR;
+        // double accXg = accX * ACC_SCALE_FACTOR;
+        // double accYg = accY * ACC_SCALE_FACTOR;
+        // double accZg = accZ * ACC_SCALE_FACTOR;
 
-        double magHeading = atan2(magYuT, magXuT) * 180.0 / M_PI;
+        // double magHeading = atan2(magYuT, magXuT) * 180.0 / M_PI;
 
-        if (magHeading < 0) {
-            magHeading += 360.0;
-        }
+        // if (magHeading < 0) {
+        //     magHeading += 360.0;
+        // }
 
-        printf("Magnetometer - X: %.2f uT, Y: %.2f uT, Z: %.2f uT, Heading: %.2f°\n", magXuT, magYuT, magZuT, magHeading);
-        printf("Accelerometer - X: %.2f g, Y: %.2f g, Z: %.2f g\n", accXg, accYg, accZg);
+        // printf("Magnetometer - X: %.2f uT, Y: %.2f uT, Z: %.2f uT, Heading: %.2f°\n", magXuT, magYuT, magZuT, magHeading);
+        // printf("Accelerometer - X: %.2f g, Y: %.2f g, Z: %.2f g\n", accXg, accYg, accZg);
 
-        // // Motor movements
-        // // Both Motors in Forward Direction
-        // move('reverse');
+        // Motor movements
+        move(BACKWARD);
         // sleep_ms(2000); 
-        // move('fwd');
-        // sleep_ms(2000); 
-        // move('turnL');
-        // sleep_ms(2000); 
-        // // Print the measured distance and speed 
-        // printf("Distance: %.2lf cm\n", wheel_distance); 
-        // printf("Speed: %d pulses per second\n", speed); 
+        // move(FORWARD);
+        // sleep_ms(3000); 
+        // move(LEFT);
+        // sleep_ms(1500); 
+        // Print the measured distance and speed 
+        printf("Distance: %.2lf cm\n", wheel_distance); 
+        printf("Speed: %d pulses per second\n", speed); 
  
-        // // Sleep for a short interval (adjust as needed) 
-        // sleep_ms(2000); 
+        // Sleep for a short interval (adjust as needed) 
+        //sleep_ms(2000); 
 
 
         // Ultrasonic sensor
         float object_distance = getCm(trigPin, echoPin);
         // float straight_line = sqrt(pow(object_distance, 2) - pow(object_distance, 2));
 
-        float turn_direction = LEFT;
+        // float turn_direction = LEFT;
 
         // If object is not near, follow manual control
         if (object_distance >= 0)
         {
-            printf("Distance: %.2f cm\n", object_distance);
+            printf("Object Distance: %.2f cm\n", object_distance);
             // printf("Straight line distance: %.2f cm\n", straight_line);
+
+            if (object_distance <= 30)
+            {
+                printf("Object detected ahead.\n");
+            }
         }
         // If object is near, auto maneuver around obstacle
         else if (object_distance <= 30)
@@ -405,92 +428,92 @@ int main()
 
             printf("Auto mode engaged.\n");
 
-            // Save current position and heading
-            double og_x = magXuT;
-            double og_y = magYuT;
-            double og_heading = magHeading;
+        //     // Save current position and heading
+        //     double og_x = magXuT;
+        //     double og_y = magYuT;
+        //     double og_heading = magHeading;
 
-            // Find leftmost corner of obstacle and distance to travel to pass obstacle
-            float leftward_distance = travel_distance(object_distance, trigPin, echoPin, turn_direction);
-            float left_straight_line = sqrt(pow(object_distance, 2) - pow(leftward_distance, 2));
+        //     // Find leftmost corner of obstacle and distance to travel to pass obstacle
+        //     float leftward_distance = travel_distance(object_distance, trigPin, echoPin, turn_direction);
+        //     float left_straight_line = sqrt(pow(object_distance, 2) - pow(leftward_distance, 2));
 
-            // Set turn_direction to right
-            turn_direction = RIGHT;
+        //     // Set turn_direction to right
+        //     turn_direction = RIGHT;
 
-            // Turn back to saved heading
+        //     // Turn back to saved heading
 
-            // Find rightmost corner of obstacle and distance to travel to pass obstacle
-            float rightward_distance = travel_distance(object_distance, trigPin, echoPin, turn_direction);
-            float right_straight_line = sqrt(pow(object_distance, 2) - pow(rightward_distance, 2));
+        //     // Find rightmost corner of obstacle and distance to travel to pass obstacle
+        //     float rightward_distance = travel_distance(object_distance, trigPin, echoPin, turn_direction);
+        //     float right_straight_line = sqrt(pow(object_distance, 2) - pow(rightward_distance, 2));
 
-            // Determine if object is a wall
-            if (left_straight_line > 50 && right_straight_line > 50)
-            {
-                printf("Likely a wall\n");
+        //     // Determine if object is a wall
+        //     if (left_straight_line > 50 && right_straight_line > 50)
+        //     {
+        //         printf("Likely a wall\n");
 
-                // Stop and turn 90 degrees to the right
-            }
-            else
-            {
-                // Compare leftward and rightward distances and turn in the direction of the shorter distance
-                if (leftward_distance < rightward_distance)
-                {
-                    // Turn back to the left + 32 degrees (to allow for the width of the robot)
+        //         // Stop and turn 90 degrees to the right
+        //     }
+        //     else
+        //     {
+        //         // Compare leftward and rightward distances and turn in the direction of the shorter distance
+        //         if (leftward_distance < rightward_distance)
+        //         {
+        //             // Turn back to the left + 32 degrees (to allow for the width of the robot)
                     
-                    // Move forward leftward_distance + car_length;
-                    moveForwardDistance(leftward_distance + car_length);
+        //             // Move forward leftward_distance + car_length;
+        //             moveForwardDistance(leftward_distance + car_length);
 
-                    // Set turn_direction back to left
-                    turn_direction = LEFT;
-                }
-                else
-                {
-                    // Turn right by another 32 degrees (to allow for the width of the robot)
+        //             // Set turn_direction back to left
+        //             turn_direction = LEFT;
+        //         }
+        //         else
+        //         {
+        //             // Turn right by another 32 degrees (to allow for the width of the robot)
 
-                    // Move forward rightward_distance + car_length;
-                    moveForwardDistance(rightward_distance + car_length);
-                }
+        //             // Move forward rightward_distance + car_length;
+        //             moveForwardDistance(rightward_distance + car_length);
+        //         }
                 
-                // Turn back to the saved heading and move forward by one car length cm
-                moveForwardDistance(car_length);
+        //         // Turn back to the saved heading and move forward by one car length cm
+        //         moveForwardDistance(car_length);
 
-                // Turn to face obstacle again
-                // If obstacle detected, repeat the above steps
-                // Find distance to travel to pass the corner of the obstacle
-                float obstacle_distance = travel_distance(object_distance, trigPin, echoPin, turn_direction);
+        //         // Turn to face obstacle again
+        //         // If obstacle detected, repeat the above steps
+        //         // Find distance to travel to pass the corner of the obstacle
+        //         float obstacle_distance = travel_distance(object_distance, trigPin, echoPin, turn_direction);
 
-                // Move forward by the obstacle_distance + car_length;
-                moveForwardDistance(obstacle_distance + car_length);
+        //         // Move forward by the obstacle_distance + car_length;
+        //         moveForwardDistance(obstacle_distance + car_length);
 
-                // Turn back to the saved heading and move forward until algined with previous gradient
+        //         // Turn back to the saved heading and move forward until algined with previous gradient
 
-                // Current position
-                double curr_x = magXuT;
-                double curr_y = magYuT;
+        //         // Current position
+        //         double curr_x = magXuT;
+        //         double curr_y = magYuT;
 
-                // Calculate the distance from the current position to the original line
-                double ortho_travel_distance = calculateOrthoDistance(og_x, og_y, og_heading, curr_x, curr_y);
+        //         // Calculate the distance from the current position to the original line
+        //         double ortho_travel_distance = calculateOrthoDistance(og_x, og_y, og_heading, curr_x, curr_y);
 
-                // Return to projected position on original line
-                // Insert function to turn to face the original line
+        //         // Return to projected position on original line
+        //         // Insert function to turn to face the original line
 
-                // Move towards the original line path, and account the length of the car
-                double move_ortho_distance = ortho_travel_distance + (car_length / 2);
-                moveForwardDistance(move_ortho_distance);
-                // Turn to face original heading
-            }
+        //         // Move towards the original line path, and account the length of the car
+        //         double move_ortho_distance = ortho_travel_distance + (car_length / 2);
+        //         moveForwardDistance(move_ortho_distance);
+        //         // Turn to face original heading
+        //     }
             
-            // Resume manual control
-            car_mode = MANUAL;
+        //     // Resume manual control
+        //     car_mode = MANUAL;
         }
-        // If ultrasonic sensor fails to read distance
-        else
-        {
-            printf("Error reading distance\n");
+        // // If ultrasonic sensor fails to read distance
+        // else
+        // {
+        //     printf("Error reading distance\n");
 
-            // Stop the car maybe???
-        }
-        sleep_ms(100); // Update distance and magnetometer ever 0.001s
+        //     // Stop the car maybe???
+        // }
+        // sleep_ms(100); // Update distance and magnetometer ever 0.001s
     }
 
     return 0;
